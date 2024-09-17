@@ -6,7 +6,7 @@ import { Dropdown } from "react-native-material-dropdown";
 import * as RNFS from "react-native-fs";
 import Moment from "moment";
 import { EventRegister } from "react-native-event-listeners";
-import ZebraScanner from "react-native-zebra-scanner";
+import ZebraScanner from "@nextup/react-native-zebra-scanner";
 
 // Themes and Styles
 import styles from "./styles";

@@ -37,7 +37,7 @@ import { NativeModules } from "react-native";
 const { FileUpload } = NativeModules;
 import Moment from "moment";
 import { EventRegister } from "react-native-event-listeners";
-import ZebraScanner from "react-native-zebra-scanner";
+import ZebraScanner from "@nextup/react-native-zebra-scanner";
 import { DeviceEventEmitter } from "react-native";
 
 //import SSHClient from 'react-native-ssh-sftp';
