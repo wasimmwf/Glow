@@ -18,7 +18,6 @@ class HomeScreen extends Component {
     super(props);
     this.state = {
       //loading: false,
-      isSwitchOn: false,
       arrProductType: [],
       selectedSessionType: "CC Product",
       selectedIndex: 0
@@ -109,9 +108,9 @@ class HomeScreen extends Component {
             style={styles.Create}
             underlayColor="#fff"
             onPress={() => {
-              (this.state.selectedIndex == 1) ? this.props.navigation.push("P5SessionScreen") :
-                (this.state.selectedIndex == 2) ? this.props.navigation.push("SFPSessionScreen") :
-                  this.props.navigation.push("SessionScreen")
+              (this.state.selectedIndex == 1) ? this.props.navigation.navigate("P5SessionScreen") :
+                (this.state.selectedIndex == 2) ? this.props.navigation.navigate("SFPSessionScreen") :
+                  this.props.navigation.navigate("SessionScreen")
             }
             }>
             <Text style={[styles.ButtonTxtStyle]}>{'Create'}</Text>
@@ -195,21 +194,6 @@ const styles = StyleSheet.create({
     ...Fonts.subDescription,
     color: Colors.white,
     fontFamily: 'monospace'
-  },
-  dropdown: {
-    marginTop: 4,
-    marginLeft: 5,
-    ...Fonts.description,
-    fontWeight: 'bold',
-    color: Colors.white,
-    height: '100%',
-    textAlign: 'center',
-    borderRadius: 5,
-    backgroundColor: "transparent",
-    borderColor: '#ddd',
-    borderWidth: 1,
-    shadowColor: 'transparent',
-    borderBottomColor: 'transparent'
   },
   dropdown1BtnStyle: {
     width: 360,

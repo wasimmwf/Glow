@@ -1,51 +1,15 @@
 // Import libraries to create a component
-import { useEffect } from "react";
 import React, { Component } from "react";
-import {
-  Text,
-  View,
-  Image,
-  ImageBackground,
-  TouchableOpacity,
-  Alert,
-  TouchableHighlight,
-  KeyboardAvoidingView,
-  TextInput,
-  FlatList,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Platform,
-  AlertIOS,
-  BackHandler,
-  ScrollView,
-  //LogBox,
-  PermissionsAndroid,
-  Dimensions,
-} from "react-native";
+import { Text, View, ImageBackground, Alert, TouchableHighlight, KeyboardAvoidingView, TextInput, Platform, AlertIOS, BackHandler, ScrollView, Dimensions, } from "react-native";
 
-// PermissionsAndroid.request(
-//   PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-// );
-
-import { Dropdown } from "react-native-material-dropdown";
-//import { Dropdown } from "react-native-material-dropdown-v2"
+// import { Dropdown } from "react-native-material-dropdown";
+import Dropdown from 'react-native-select-dropdown';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import * as RNFS from "react-native-fs";
-//import FileUpload from 'react-native-file-upload'
-//var FileUpload = require('NativeModules').FileUpload;
-import { NativeModules } from "react-native";
-const { FileUpload } = NativeModules;
 import Moment from "moment";
 import { EventRegister } from "react-native-event-listeners";
 import ZebraScanner from "@nextup/react-native-zebra-scanner";
-import { DeviceEventEmitter } from "react-native";
-
-//import SSHClient from 'react-native-ssh-sftp';
-
-// let client = new SSHClient('https://qatransfer.pconnect.biz/', 22, 'isms_fr_dev', '2f36sc', (error) => {
-//   if (error)
-//     console.warn(error);
-// });
 
 // Themes and Styles
 import styles from "./styles";
@@ -56,9 +20,6 @@ const { width, height } = Dimensions.get("window");
 // console.log('Dimension ', width, height);
 
 const txtPathFolder = RNFS.DocumentDirectoryPath + "/ScannedTxt/";
-//const txtExternalFolder = RNFS.ExternalStorageDirectoryPath + "/";
-//const txtExternalFolder = RNFS.ExternalStorageDirectoryPath + "/GLOW/";
-//const txtExternalFolder = "/storage/emulated/0/Android/media/{$packagename}" + "/GLOW/";
 const txtExternalFolder = "/storage/emulated/0/Android/media/GLOW/";
 
 // Create a component
@@ -88,21 +49,15 @@ class SessionScreen extends Component {
       barcodeScannedData: "",
       message: "",
       isSuccess: false,
-      userNameFocus:false,
-      descFoucus:false
+      userNameFocus: false,
+      descFoucus: false
     };
   }
-  handleUserFocus = () => this.setState({userNameFocus: true,descFoucus:false})
-  handleDesFocus = () => this.setState({descFoucus: true,userNameFocus:false})
+  handleUserFocus = () => this.setState({ userNameFocus: true, descFoucus: false })
+  handleDesFocus = () => this.setState({ descFoucus: true, userNameFocus: false })
 
   //Added to handle device back button
   handleBackButton = () => {
-
-    // const pushAction = StackActions.push({
-    //   routeName: 'DefaultSelections',
-    // });
-
-    // this.props.navigation.dispatch(pushAction);
     return true
   }
 
@@ -122,7 +77,6 @@ class SessionScreen extends Component {
         scannedCode = scannedCode.toUpperCase();
         //var content = await RNFS.readFile(txtPathFolder + fileName, 'utf8');
         //console.log("Wasim ->>  ",scannedCode.indexOf("3K"),scannedCode.indexOf("3S"))
-        // if (scannedCode.indexOf("3K") != -1 ||scannedCode.indexOf("3S") != -1) {
         if (scannedCode.indexOf("3K") == 0 || scannedCode.indexOf("3S") == 0) {
           //Read File txt file
           var fileName = this.state.sessionId + ".txt";
@@ -182,16 +136,8 @@ class SessionScreen extends Component {
       }
       //console.log("scannedCode-1->", this.state.scannedData);
     };
-    ZebraScanner.addScanListener(scanListener);
+    //ZebraScanner.addScanListener(scanListener);
 
-    // LogBox.ignoreLogs([
-    //   "Animated: `useNativeDriver`",
-    //   "componentWillUpdate has been renamed, and is not recommended for use.",
-    //   "componentWillReceiveProps has been renamed, and is not recommended for use.",
-    //   "ViewPropTypes will be removed from React Native, along with all other PropTypes. We recommend that you migrate away from PropTypes and switch to a type system like TypeScript. If you need to continue using ViewPropTypes, migrate to the 'deprecated-react-native-prop-types' package.",
-    // ]); //To ignore warning
-
-    //var txtPath = RNFS.DocumentDirectoryPath + '/ScannedTxt/';
     RNFS.exists(txtPathFolder).then((folderExist) => {
       if (folderExist) {
         //console.log('folder exist ->> ', folderExist);
@@ -205,23 +151,12 @@ class SessionScreen extends Component {
           });
       }
     });
-    // this.BackListner = EventRegister.addEventListener("BackListner", (data) => {
-    //   Alert.alert(
-    //     "Alert",
-    //     "Are you sure you want to Close?",
-    //     [
-    //       { text: "NO", onPress: () => null, style: "Cancel" },
-    //       { text: "YES", onPress: () => this.onClose_Yes() },
-    //     ],
-    //     { cancelable: false }
-    //   );
-    // });
     this.BackListner = EventRegister.addEventListener("BackListner", (data) => {
       Alert.alert(
         "Alert",
         "Do you want to save the file?",
         [
-          { text: "CANCEL", onPress: () => {}, },
+          { text: "CANCEL", onPress: () => { }, },
           { text: "NO", onPress: () => this.onClose_Yes() },
           { text: "YES", onPress: () => this.onBackSave_Yes() },
         ],
@@ -237,17 +172,11 @@ class SessionScreen extends Component {
     var fileName = this.state.sessionId + ".txt";
 
     if (this.state.sessionId == "") {
-      this.props.navigation.push("HomeScreen");
-      // setTimeout(() => {
-      //   BackHandler.exitApp();
-      // }, 10000);
+      this.props.navigation.navigate("HomeScreen");
     } else {
       RNFS.unlink(txtPathFolder + fileName)
         .then((success) => {
-          this.props.navigation.push("HomeScreen");
-          // setTimeout(() => {
-          //   BackHandler.exitApp();
-          // }, 10000);
+          this.props.navigation.navigate("HomeScreen");
         })
         .catch((err) => {
           //console.log(err.message);
@@ -261,11 +190,9 @@ class SessionScreen extends Component {
     if (this.state.scanCount > 0) {
       RNFS.copyFile(txtPathFolder + fileName, txtExternalFolder + fileName)
         .then((success) => {
-          //this.showAlert(fileName + ' File saved successfully');
-          //this.showAlert("File saved successfully.");
           RNFS.unlink(txtPathFolder + fileName)
             .then((success) => {
-              this.props.navigation.push("HomeScreen");
+              this.props.navigation.navigate("HomeScreen");
             })
             .catch((err) => {
               //console.log(err.message);
@@ -277,11 +204,11 @@ class SessionScreen extends Component {
         });
     } else {
       if (this.state.sessionId == "") {
-        this.props.navigation.push("HomeScreen");
+        this.props.navigation.navigate("HomeScreen");
       } else {
         RNFS.unlink(txtPathFolder + fileName)
           .then((success) => {
-            this.props.navigation.push("HomeScreen");
+            this.props.navigation.navigate("HomeScreen");
           })
           .catch((err) => {
             //console.log(err.message);
@@ -293,10 +220,6 @@ class SessionScreen extends Component {
   componentWillUnmount() {
     EventRegister.removeEventListener(this.BackListner);
   }
-
-  // initiateSessionScreenInformation() {
-  //   var arrSystemValues = [];
-  // }
 
   // Method to be triggered on click of Main Button
   btnStartSave = async () => {
@@ -313,22 +236,21 @@ class SessionScreen extends Component {
         isDescEnabled: false,
         isManualButtonEnabled: true,
         autFocus: true,
-        userNameFocus:false,
-        descFoucus:false
-        //selectedMovType:this.state.arrMovementType[0].value
+        userNameFocus: false,
+        descFoucus: false
       });
       //Write file
       await RNFS.writeFile(
         txtPathFolder + fileName,
         timeNow +
-          ";" +
-          this.state.selectedMovType +
-          ";" +
-          this.state.userName +
-          ";" +
-          this.state.description +
-          ";" +
-          DateNow,
+        ";" +
+        this.state.selectedMovType +
+        ";" +
+        this.state.userName +
+        ";" +
+        this.state.description +
+        ";" +
+        DateNow,
         "utf8"
       );
     } else {
@@ -337,7 +259,7 @@ class SessionScreen extends Component {
         "glow",
         "Are you sure you want to Save?",
         [
-          { text: "NO", onPress: () => {}, style: "Cancel" },
+          { text: "NO", onPress: () => { }, style: "Cancel" },
           { text: "YES", onPress: () => this.onSave_Yes() },
         ],
         { cancelable: false }
@@ -351,14 +273,9 @@ class SessionScreen extends Component {
     if (this.state.scanCount > 0) {
       RNFS.copyFile(txtPathFolder + fileName, txtExternalFolder + fileName)
         .then((success) => {
-          //this.showAlert(fileName + ' File saved successfully');
-          //this.showAlert("File saved successfully.");
           RNFS.unlink(txtPathFolder + fileName)
             .then((success) => {
-              this.props.navigation.push("HomeScreen");
-              // setTimeout(() => {//Hang Issue
-              //   BackHandler.exitApp();
-              // }, 600000);
+              this.props.navigation.navigate("HomeScreen");
             })
             .catch((err) => {
               //console.log(err.message);
@@ -370,17 +287,11 @@ class SessionScreen extends Component {
         });
     } else {
       if (this.state.sessionId == "") {
-        this.props.navigation.push("HomeScreen");
-        // setTimeout(() => {
-        //   BackHandler.exitApp();
-        // }, 10000);
+        this.props.navigation.navigate("HomeScreen");
       } else {
         RNFS.unlink(txtPathFolder + fileName)
           .then((success) => {
-            this.props.navigation.push("HomeScreen");
-            // setTimeout(() => {//Hang Issue
-            //   BackHandler.exitApp();
-            // }, 600000);
+            this.props.navigation.navigate("HomeScreen");
           })
           .catch((err) => {
             //console.log(err.message);
@@ -396,66 +307,18 @@ class SessionScreen extends Component {
     this.setState({ selection: event.nativeEvent.selection });
   };
   onChangeScannedTextPress(value) {
-    //var startSelection= this.state.selection
-    //console.log("startSelection ->> ",startSelection)
-    // if (this.state.scanData == '') {
-    //   this.setState({scanData: value,prevScanData:value});
-    // } else {
-    //   this.setState({scanData: this.state.prevScanData + '\n' + value});
-    // }
-    // console.log('Wasim Value  ->> ', value);
-    // var sacnned = false;
-    // console.log(
-    //   'Wasim this.state.scanDataArray.length  ->> ',
-    //   this.state.scanDataArray.length,
-    // );
-    // for (let index = 0; index < this.state.scanDataArray.length; index++) {
-    //   console.log('Wasim index ->>> ', this.state.scanDataArray[index]);
-    //   if (
-    //     this.state.scanDataArray[index] === this.state.scanDataArray[index++]
-    //   ) {
-    //     sacnned = true;
-    //     console.log('Wasim sacnned 1->>> ', sacnned);
-    //     break;
-    //   }
-    // }
-    // console.log('Wasim sacnned 2->>> ', sacnned);
-    // if (sacnned === false) {
-    //   if (value != '') {
-    //     this.state.scanDataArray.push(value);
-    //     this.setState({scanData: value});
-    //     this.showAlert('Scanned Successfully.');
-    //   }
-    // } else {
-    //   this.showAlert('Already Scaned ');
-    // }
-    // if (value != '') {
-    //   if(this.state.prevScanData == ''){
-    //     this.setState({prevScanData: value});
-    //   }
-    //   else{
-    //   }
-    //   this.setState({scanData: value});
-    //   this.showAlert('Scanned Successfully.');
-    // }
-    this.setState({ scanData: value.replace(/\s/g,'') });
-    //Handling space
-    // if (value.indexOf(" ") != 0) {
-    //   this.setState({ scanData: value});
-    // }
+    this.setState({ scanData: value.replace(/\s/g, '') });
   }
   onChangeUserText(value) {
-    //this.setState({ userName: value.replace(/\s/g,'') });
     //Handling space
     if (value.indexOf(" ") != 0) {
-      this.setState({ userName: value});
+      this.setState({ userName: value });
     }
   }
   onChangeDescText(value) {
-    //this.setState({ description: value.replace(/\s/g,'') });
     //Handling space
     if (value.indexOf(" ") != 0) {
-      this.setState({ description: value});
+      this.setState({ description: value });
     }
   }
 
@@ -468,7 +331,7 @@ class SessionScreen extends Component {
     (Platform.OS === "android" ? Alert : AlertIOS).alert("Alert", msg, [
       {
         text: "Ok",
-        onPress: () => {},
+        onPress: () => { },
       },
     ]);
   }
@@ -476,8 +339,7 @@ class SessionScreen extends Component {
     this.setState({
       isManualAllowed: true,
       isManualButtonEnabled: false,
-      //barcodeScannedData: this.state.scanData,
-      scanData:""
+      scanData: ""
     });
   };
   btnManualSave_Click = async () => {
@@ -487,108 +349,51 @@ class SessionScreen extends Component {
     mScanned = mScanned.replace("+", "");
     mScanned = mScanned.replace("-", "");
     mScanned = mScanned.toUpperCase();
-    //var content = await RNFS.readFile(txtPathFolder + fileName, 'utf8');
-    //console.log("Wasim ->>  ",scannedCode.indexOf("3K"),scannedCode.indexOf("3S"))
-    // if (scannedCode.indexOf("3K") != -1 ||scannedCode.indexOf("3S") != -1) {
     if (mScanned.indexOf("3K") == 0 || mScanned.indexOf("3S") == 0) {
       var fileName = this.state.sessionId + ".txt";
-       //Read File
-        RNFS.readFile(txtPathFolder + fileName, "utf8")
-            .then((content) => {
-              if (content.includes(mScanned) == true) {
-                //this.showAlert("Already Scaned " + mScanned);
-                this.setState({
-                  isSuccess: false,
-                  message: "Already Scaned " + mScanned,
-                });
-              } else {
-                var TimeNow = Moment(new Date()).format("hh:mm A");
-                //write the file
-                RNFS.appendFile(
-                  txtPathFolder + fileName,
-                  "\n" + mScanned + ";" + TimeNow + ";M",
-                  "utf8"
-                )
-                  .then((success) => {
-                    //File is appended
-                    //this.showAlert("Scanned Successfully.");
-                    this.setState({
-                      scanCount: this.state.scanCount + 1,
-                      scanData: "",
-                      isManualButtonEnabled: true,
-                      isManualAllowed: false,
-                      isSuccess: true,
-                      message: "Scanned Manually.",
-                    });
-                  })
-                  .catch((err) => {
-                    console.log(err.message);
-                  });
-              }
-            })
-            .catch((err) => {
-              console.log(err.message);
+      //Read File
+      RNFS.readFile(txtPathFolder + fileName, "utf8")
+        .then((content) => {
+          if (content.includes(mScanned) == true) {
+            //this.showAlert("Already Scaned " + mScanned);
+            this.setState({
+              isSuccess: false,
+              message: "Already Scaned " + mScanned,
             });
+          } else {
+            var TimeNow = Moment(new Date()).format("hh:mm A");
+            //write the file
+            RNFS.appendFile(
+              txtPathFolder + fileName,
+              "\n" + mScanned + ";" + TimeNow + ";M",
+              "utf8"
+            )
+              .then((success) => {
+                //File is appended
+                //this.showAlert("Scanned Successfully.");
+                this.setState({
+                  scanCount: this.state.scanCount + 1,
+                  scanData: "",
+                  isManualButtonEnabled: true,
+                  isManualAllowed: false,
+                  isSuccess: true,
+                  message: "Scanned Manually.",
+                });
+              })
+              .catch((err) => {
+                console.log(err.message);
+              });
+          }
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
     } else {
       this.setState({
         isSuccess: false,
         message: "Invalid barcode. ",
       });
     }
-  };
-
-  btnSave_Click = async () => {
-    // if (!this.state.isManualAllowed && this.state.scanData != '') {
-    //   var fileName = this.state.sessionId + '.txt';
-    //   var TimeNow = Moment(new Date()).format('hh:mm A');
-    //   var content = await RNFS.readFile(txtPathFolder + fileName, 'utf8');
-    //   //console.log('Txt file content ->> ', content)
-    //   if (content.includes(this.state.scanData) == true) {
-    //     this.showAlert('Already Scaned ' + this.state.scanData);
-    //   } else {
-    //     //write the file
-    //     RNFS.appendFile(
-    //       txtPathFolder + fileName,
-    //       '\n' + this.state.scanData + ';' + TimeNow + ';A',
-    //       'utf8',
-    //     )
-    //       .then(success => {
-    //         //File is appended
-    //         this.showAlert('Scanned Successfully.');
-    //         this.setState({
-    //           scanCount: this.state.scanCount + 1,
-    //           scanData: '',
-    //         });
-    //       })
-    //       .catch(err => {
-    //         console.log(err.message);
-    //       });
-    //   }
-    // } else if (this.state.isManualAllowed && this.state.scanData != '') {
-    //   var fileName = this.state.sessionId + '.txt';
-    //   var TimeNow = Moment(new Date()).format('hh:mm A');
-    //   //write the file
-    //   RNFS.appendFile(
-    //     txtPathFolder + fileName,
-    //     '\n' + this.state.scanData + ';' + TimeNow + ';M',
-    //     'utf8',
-    //   )
-    //     .then(success => {
-    //       //console.log('FILE APPENDED!');
-    //       this.showAlert('Scanned manually.');
-    //       this.setState({
-    //         scanCount: this.state.scanCount + 1,
-    //         scanData: '',
-    //         isManualButtonEnabled: true,
-    //         isManualAllowed: true,
-    //       });
-    //     })
-    //     .catch(err => {
-    //       console.log(err.message);
-    //     });
-    // } else {
-    //   this.showAlert('Barcode scanning is not completed.');
-    // }
   };
 
   // Render Method
@@ -669,9 +474,8 @@ class SessionScreen extends Component {
                       editable={false}
                       value={this.state.sessionId}
                     ></TextInput>
-                    {/* {this.state.userName.length > 0 && */}
                     {this.state.userName.length > 0 && this.state.selectedMovType != "Select Movement Type" &&
-                    this.state.description.length > 0 ? (
+                      this.state.description.length > 0 ? (
                       <TouchableHighlight
                         style={styles.StartSession}
                         underlayColor="#fff"
@@ -688,14 +492,31 @@ class SessionScreen extends Component {
                 <Text style={styles.titleCaption}>{"Movement Type "}</Text>
                 <View style={styles.valueContainer}>
                   <Dropdown
-                    style={styles.dropdown}
-                    //label={this.state.selectedMovType}
                     data={this.state.arrMovementType}
-                    disabled={!this.state.isStartSession}
-                    //valueExtractor={({ value }) => value}
-                    //onChangeText={(value) => { this.onChangeTextPress('value', value) }}
-                    value={this.state.selectedMovType}
-                    onChangeText={(value) => this.onChangeTextPress(value)}
+                    //defaultButtonText={this.state.selectedMovType}
+                    onSelect={(selectedItem, index) => {
+                      this.onChangeTextPress(selectedItem.value)
+                    }}
+                    disabled={this.state.arrMovementType.length > 0 ? false : true}
+                    buttonStyle={styles.dropdown1BtnStyle}
+                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                    dropdownIconPosition={'right'}
+                    dropdownStyle={styles.dropdown1DropdownStyle}
+                    rowStyle={styles.dropdown1RowStyle}
+                    rowTextStyle={styles.dropdown1RowTxtStyle}
+                    renderDropdownIcon={isOpened => {
+                      return <FontAwesome name={isOpened ? 'caret-up' : 'caret-down'} color={'#444'} size={20} />;
+                    }}
+                    buttonTextAfterSelection={(selectedItem, index) => {
+                      // text represented after item is selected
+                      // if data array is an array of objects then return selectedItem.property to render after item is selected
+                      return selectedItem.value
+                    }}
+                    rowTextForSelection={(item, index) => {
+                      // text represented for each item in dropdown
+                      // if data array is an array of objects then return item.property to represent item in dropdown
+                      return item.value
+                    }}
                   />
                 </View>
 
@@ -705,7 +526,7 @@ class SessionScreen extends Component {
                     //style={styles.textInput}
                     onFocus={this.handleUserFocus}
                     // style={this.state.isUserNameEnabled ? styles.textInput:styles.textInputGreyUserDesc}
-                    style={this.state.userNameFocus ? styles.textInputFocus :styles.textInput}
+                    style={this.state.userNameFocus ? styles.textInputFocus : styles.textInput}
                     editable={this.state.isUserNameEnabled}
                     value={this.state.userName}
                     placeholder="Enter User Name"
@@ -722,7 +543,7 @@ class SessionScreen extends Component {
                     //style={styles.textInput}
                     onFocus={this.handleDesFocus}
                     // style={this.state.isDescEnabled ? styles.textInput:styles.textInputGreyUserDesc}
-                    style={this.state.descFoucus ? styles.textInputFocus :styles.textInput}
+                    style={this.state.descFoucus ? styles.textInputFocus : styles.textInput}
                     editable={this.state.isDescEnabled}
                     value={this.state.description}
                     placeholder="Enter Description"
@@ -735,41 +556,21 @@ class SessionScreen extends Component {
                 <View>
                   <Text style={styles.titleCaption}>{"Barcode "}</Text>
                   <View style={styles.valueContainer}>
-                    {/* <TextInput
-                      style={
-                        !this.state.scanData == ""
-                          ? styles.textInputBarcodeColored
-                          : styles.textInputBarcode
-                      }
-                      multiline={!this.state.isManualAllowed}
-                      numberOfLines={3}
-                      scrollEnabled={true}
-                      //autoFocus={this.state.autFocus}
-                      editable={this.state.isManualAllowed}
-                      value={this.state.scanData}
-                      // onChangeText={scanData =>
-                      //   this.setState({scanData})
-                      // }
-                      //onSelectionChange={(event)=>this.handleSelectionChange(event)}
-                      onChangeText={(value) =>
-                        this.onChangeScannedTextPress(value)
-                      }
-                    ></TextInput> */}
                     {
                       this.state.isManualAllowed ?
-                      <TextInput
-                      style={
-                        !this.state.scanData == ""
-                          ? styles.textInputBarcodeColored
-                          : styles.textInputBarcode
-                      }
-                      editable={true}
-                      value={this.state.scanData}
-                      onChangeText={(value) =>
-                        this.onChangeScannedTextPress(value)
-                      }
-                    ></TextInput>
-                      :
+                        <TextInput
+                          style={
+                            !this.state.scanData == ""
+                              ? styles.textInputBarcodeColored
+                              : styles.textInputBarcode
+                          }
+                          editable={true}
+                          value={this.state.scanData}
+                          onChangeText={(value) =>
+                            this.onChangeScannedTextPress(value)
+                          }
+                        ></TextInput>
+                        :
                         // <View pointerEvents="none">
                         <View >
                           <TextInput
@@ -786,12 +587,9 @@ class SessionScreen extends Component {
                             value={this.state.scanData}
                           ></TextInput>
                         </View>
-
-
                     }
                   </View>
                 </View>
-                {/* ) : null} */}
               </ScrollView>
             </View>
 
@@ -825,7 +623,6 @@ class SessionScreen extends Component {
                     <Text style={[styles.ManualText]}> {"Save"}</Text>
                   </TouchableHighlight>
                 )}
-                {/* {this.state.isScanEnabled ? ( */}
                 <Text
                   style={{
                     flex: 0.5,
@@ -837,7 +634,6 @@ class SessionScreen extends Component {
                   {"Scan Count : "}
                   {this.state.scanCount}
                 </Text>
-                {/* ) : null} */}
               </View>
 
               <Text
@@ -850,32 +646,6 @@ class SessionScreen extends Component {
                 {this.state.message}
               </Text>
             </View>
-            {/* </ScrollView> */}
-
-            {/* <View
-              style={{
-                flex: 2,
-                flexDirection: 'row',
-                justifyContent: 'center',
-              }}>
-              {this.state.isResetEnable ? (
-                <TouchableHighlight
-                  style={styles.Reset}
-                  underlayColor="#fff"
-                  onPress={this.btnReset_Click}>
-                  <Text style={[styles.ResetText]}>{'Reset'}</Text>
-                </TouchableHighlight>
-              ) : null}
-              <TouchableHighlight
-                style={styles.Save}
-                underlayColor="#fff"
-                onPress={this.btnSave_Click}>
-                <Text style={[styles.SaveText]}>{'Save'}</Text>
-              </TouchableHighlight>
-            </View> */}
-            {/* <Text style={styles.versiontitle}>
-              {'Version : '}: {PackageJson.version}
-            </Text> */}
           </ImageBackground>
         </KeyboardAvoidingView>
       </View>
