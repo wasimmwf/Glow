@@ -2,9 +2,8 @@
 import React, { Component } from "react";
 import { Text, View, ImageBackground, Alert, TouchableHighlight, KeyboardAvoidingView, TextInput, Platform, AlertIOS, BackHandler, ScrollView, Dimensions, } from "react-native";
 
-// import { Dropdown } from "react-native-material-dropdown";
 import Dropdown from 'react-native-select-dropdown';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import * as RNFS from "react-native-fs";
 import Moment from "moment";
@@ -505,7 +504,7 @@ class SessionScreen extends Component {
                     rowStyle={styles.dropdown1RowStyle}
                     rowTextStyle={styles.dropdown1RowTxtStyle}
                     renderDropdownIcon={isOpened => {
-                      return <FontAwesome name={isOpened ? 'caret-up' : 'caret-down'} color={'#444'} size={20} />;
+                      return <Icon name={isOpened ? 'caret-up' : 'caret-down'} color={'#444'} size={20} />;
                     }}
                     buttonTextAfterSelection={(selectedItem, index) => {
                       // text represented after item is selected

@@ -1,8 +1,11 @@
 // Import libraries to create a component
 import React, { Component } from "react";
-import {Text,View,ImageBackground,Alert,TouchableHighlight,KeyboardAvoidingView,TextInput,Platform,AlertIOS,BackHandler,ScrollView,Dimensions,} from "react-native";
+import {Text,View,ImageBackground,Alert,TouchableHighlight,KeyboardAvoidingView,TextInput,BackHandler,ScrollView,Dimensions,} from "react-native";
 
-import { Dropdown } from "react-native-material-dropdown";
+import Dropdown from 'react-native-select-dropdown';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+
 import * as RNFS from "react-native-fs";
 import Moment from "moment";
 import { EventRegister } from "react-native-event-listeners";
@@ -16,9 +19,6 @@ const { width, height } = Dimensions.get("window");
 // console.log('Dimension ', width, height);
 
 const txtPathFolder = RNFS.DocumentDirectoryPath + "/SFPScannedTxt/";
-//const txtExternalFolder = RNFS.ExternalStorageDirectoryPath + "/";
-//const txtExternalFolder = RNFS.ExternalStorageDirectoryPath + "/GLOW/";
-//const txtExternalFolder = "/storage/emulated/0/Android/media/{$packagename}" + "/GLOW/";
 const txtExternalFolder = "/storage/emulated/0/Android/media/GLOW/";
 
 // Create a component
@@ -57,12 +57,6 @@ class SFPSessionScreen extends Component {
 
   //Added to handle device back button
   handleBackButton = () => {
-
-    // const pushAction = StackActions.push({
-    //   routeName: 'DefaultSelections',
-    // });
-
-    // this.props.navigation.dispatch(pushAction);
     return true
   }
 
@@ -103,7 +97,6 @@ class SFPSessionScreen extends Component {
                 )
                   .then((success) => {
                     //File is appended
-                    //this.showAlert("Scanned Successfully.");
                     if (this.state.scanData == "") {
                       this.setState({
                         scanCount: this.state.scanCount + 1,
@@ -140,16 +133,8 @@ class SFPSessionScreen extends Component {
       }
       //console.log("scannedCode-1->", this.state.scannedData);
     };
-    ZebraScanner.addScanListener(scanListener);
+    //ZebraScanner.addScanListener(scanListener);
 
-    // LogBox.ignoreLogs([
-    //   "Animated: `useNativeDriver`",
-    //   "componentWillUpdate has been renamed, and is not recommended for use.",
-    //   "componentWillReceiveProps has been renamed, and is not recommended for use.",
-    //   "ViewPropTypes will be removed from React Native, along with all other PropTypes. We recommend that you migrate away from PropTypes and switch to a type system like TypeScript. If you need to continue using ViewPropTypes, migrate to the 'deprecated-react-native-prop-types' package.",
-    // ]); //To ignore warning
-
-    //var txtPath = RNFS.DocumentDirectoryPath + '/ScannedTxt/';
     RNFS.exists(txtPathFolder).then((folderExist) => {
       if (folderExist) {
         //console.log('folder exist ->> ', folderExist);
@@ -163,17 +148,6 @@ class SFPSessionScreen extends Component {
           });
       }
     });
-    // this.BackListner = EventRegister.addEventListener("BackListner", (data) => {
-    //   Alert.alert(
-    //     "Alert",
-    //     "Are you sure you want to Close?",
-    //     [
-    //       { text: "NO", onPress: () => null, style: "Cancel" },
-    //       { text: "YES", onPress: () => this.onClose_Yes() },
-    //     ],
-    //     { cancelable: false }
-    //   );
-    // });
     this.BackListner = EventRegister.addEventListener("BackListner", (data) => {
       Alert.alert(
         "Alert",
@@ -196,16 +170,10 @@ class SFPSessionScreen extends Component {
 
     if (this.state.sessionId == "") {
       this.props.navigation.push("HomeScreen");
-      // setTimeout(() => {
-      //   BackHandler.exitApp();
-      // }, 10000);
     } else {
       RNFS.unlink(txtPathFolder + fileName)
         .then((success) => {
           this.props.navigation.push("HomeScreen");
-          // setTimeout(() => {
-          //   BackHandler.exitApp();
-          // }, 10000);
         })
         .catch((err) => {
           //console.log(err.message);
@@ -219,8 +187,6 @@ class SFPSessionScreen extends Component {
     if (this.state.scanCount > 0) {
       RNFS.copyFile(txtPathFolder + fileName, txtExternalFolder + fileName)
         .then((success) => {
-          //this.showAlert(fileName + ' File saved successfully');
-          //this.showAlert("File saved successfully.");
           RNFS.unlink(txtPathFolder + fileName)
             .then((success) => {
               this.props.navigation.push("HomeScreen");
@@ -252,10 +218,6 @@ class SFPSessionScreen extends Component {
     EventRegister.removeEventListener(this.BackListner);
   }
 
-  // initiateSessionScreenInformation() {
-  //   var arrSystemValues = [];
-  // }
-
   // Method to be triggered on click of Main Button
   btnStartSave = async () => {
     if (this.state.isStartSession) {
@@ -273,7 +235,6 @@ class SFPSessionScreen extends Component {
         autFocus: true,
         userNameFocus:false,
         descFoucus:false
-        //selectedMovType:this.state.arrMovementType[0].value
       });
       //Write file
       await RNFS.writeFile(
@@ -309,14 +270,9 @@ class SFPSessionScreen extends Component {
     if (this.state.scanCount > 0) {
       RNFS.copyFile(txtPathFolder + fileName, txtExternalFolder + fileName)
         .then((success) => {
-          //this.showAlert(fileName + ' File saved successfully');
-          //this.showAlert("File saved successfully.");
           RNFS.unlink(txtPathFolder + fileName)
             .then((success) => {
               this.props.navigation.push("HomeScreen");
-              // setTimeout(() => {//Hang Issue
-              //   BackHandler.exitApp();
-              // }, 600000);
             })
             .catch((err) => {
               //console.log(err.message);
@@ -329,16 +285,10 @@ class SFPSessionScreen extends Component {
     } else {
       if (this.state.sessionId == "") {
         this.props.navigation.push("HomeScreen");
-        // setTimeout(() => {
-        //   BackHandler.exitApp();
-        // }, 10000);
       } else {
         RNFS.unlink(txtPathFolder + fileName)
           .then((success) => {
             this.props.navigation.push("HomeScreen");
-            // setTimeout(() => {//Hang Issue
-            //   BackHandler.exitApp();
-            // }, 600000);
           })
           .catch((err) => {
             //console.log(err.message);
@@ -354,53 +304,7 @@ class SFPSessionScreen extends Component {
     this.setState({ selection: event.nativeEvent.selection });
   };
   onChangeScannedTextPress(value) {
-    //var startSelection= this.state.selection
-    //console.log("startSelection ->> ",startSelection)
-    // if (this.state.scanData == '') {
-    //   this.setState({scanData: value,prevScanData:value});
-    // } else {
-    //   this.setState({scanData: this.state.prevScanData + '\n' + value});
-    // }
-    // console.log('Wasim Value  ->> ', value);
-    // var sacnned = false;
-    // console.log(
-    //   'Wasim this.state.scanDataArray.length  ->> ',
-    //   this.state.scanDataArray.length,
-    // );
-    // for (let index = 0; index < this.state.scanDataArray.length; index++) {
-    //   console.log('Wasim index ->>> ', this.state.scanDataArray[index]);
-    //   if (
-    //     this.state.scanDataArray[index] === this.state.scanDataArray[index++]
-    //   ) {
-    //     sacnned = true;
-    //     console.log('Wasim sacnned 1->>> ', sacnned);
-    //     break;
-    //   }
-    // }
-    // console.log('Wasim sacnned 2->>> ', sacnned);
-    // if (sacnned === false) {
-    //   if (value != '') {
-    //     this.state.scanDataArray.push(value);
-    //     this.setState({scanData: value});
-    //     this.showAlert('Scanned Successfully.');
-    //   }
-    // } else {
-    //   this.showAlert('Already Scaned ');
-    // }
-    // if (value != '') {
-    //   if(this.state.prevScanData == ''){
-    //     this.setState({prevScanData: value});
-    //   }
-    //   else{
-    //   }
-    //   this.setState({scanData: value});
-    //   this.showAlert('Scanned Successfully.');
-    // }
     this.setState({ scanData: value.replace(/\s/g,'') });
-    //Handling space
-    // if (value.indexOf(" ") != 0) {
-    //   this.setState({ scanData: value});
-    // }
   }
   onChangeUserText(value) {
     //Handling space
@@ -419,9 +323,7 @@ class SFPSessionScreen extends Component {
     if (msg == undefined) {
       msg = "Unknown error";
     }
-    if (Platform.OS === "android") {
-    }
-    (Platform.OS === "android" ? Alert : AlertIOS).alert("Alert", msg, [
+    Alert.alert("Alert", msg, [
       {
         text: "Ok",
         onPress: () => {},
@@ -587,29 +489,43 @@ class SFPSessionScreen extends Component {
 
                 <Text style={styles.titleCaption}>{"Movement Type "}</Text>
                 <View style={styles.valueContainer}>
-                  <Dropdown
-                    style={styles.dropdown}
-                    //label={this.state.selectedMovType}
+                <Dropdown
                     data={this.state.arrMovementType}
-                    disabled={!this.state.isStartSession}
-                    //valueExtractor={({ value }) => value}
-                    //onChangeText={(value) => { this.onChangeTextPress('value', value) }}
-                    value={this.state.selectedMovType}
-                    onChangeText={(value) => this.onChangeTextPress(value)}
+                    //defaultButtonText={this.state.selectedMovType}
+                    onSelect={(selectedItem, index) => {
+                      this.onChangeTextPress(selectedItem.value)
+                    }}
+                    disabled={this.state.arrMovementType.length > 0 ? false : true}
+                    buttonStyle={styles.dropdown1BtnStyle}
+                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                    dropdownIconPosition={'right'}
+                    dropdownStyle={styles.dropdown1DropdownStyle}
+                    rowStyle={styles.dropdown1RowStyle}
+                    rowTextStyle={styles.dropdown1RowTxtStyle}
+                    renderDropdownIcon={isOpened => {
+                      return <Icon name={isOpened ? 'caret-up' : 'caret-down'} color={'#444'} size={20} />;
+                    }}
+                    buttonTextAfterSelection={(selectedItem, index) => {
+                      // text represented after item is selected
+                      // if data array is an array of objects then return selectedItem.property to render after item is selected
+                      return selectedItem.value
+                    }}
+                    rowTextForSelection={(item, index) => {
+                      // text represented for each item in dropdown
+                      // if data array is an array of objects then return item.property to represent item in dropdown
+                      return item.value
+                    }}
                   />
                 </View>
 
                 <Text style={styles.titleCaption}>{"User Name "}</Text>
                 <View style={styles.valueContainer}>
                   <TextInput
-                    //style={styles.textInput}
                     onFocus={this.handleUserFocus}
-                    // style={this.state.isUserNameEnabled ? styles.textInput:styles.textInputGreyUserDesc}
                     style={this.state.userNameFocus ? styles.textInputFocus :styles.textInput}
                     editable={this.state.isUserNameEnabled}
                     value={this.state.userName}
                     placeholder="Enter User Name"
-                    //onChangeText={(userName) => this.setState({ userName })}
                     onChangeText={(value) => this.onChangeUserText(value)}
                     onSubmitEditing={() => { this.secondTextInput.focus(); }}
                     blurOnSubmit={false}
@@ -619,19 +535,15 @@ class SFPSessionScreen extends Component {
                 <Text style={styles.titleCaption}>{"Description "}</Text>
                 <View style={styles.valueContainer}>
                   <TextInput
-                    //style={styles.textInput}
                     onFocus={this.handleDesFocus}
-                    // style={this.state.isDescEnabled ? styles.textInput:styles.textInputGreyUserDesc}
                     style={this.state.descFoucus ? styles.textInputFocus :styles.textInput}
                     editable={this.state.isDescEnabled}
                     value={this.state.description}
                     placeholder="Enter Description"
-                    //onChangeText={(description) =>this.setState({ description })}
                     onChangeText={(value) => this.onChangeDescText(value)}
                     ref={(input) => { this.secondTextInput = input; }}
                   ></TextInput>
                 </View>
-                {/* {this.state.isScanEnabled ? ( */}
                 <View>
                   <Text style={styles.titleCaption}>{"Barcode "}</Text>
                   <View style={styles.valueContainer}>
@@ -650,7 +562,6 @@ class SFPSessionScreen extends Component {
                       }
                     ></TextInput>
                       :
-                        // <View pointerEvents="none">
                         <View >
                           <TextInput
                             style={
@@ -658,7 +569,6 @@ class SFPSessionScreen extends Component {
                                 ? styles.textInputBarcodeColored
                                 : styles.textInputBarcode
                             }
-                            //caretHidden={true}//Hide Cursor Pointer
                             multiline={true}
                             numberOfLines={3}
                             scrollEnabled={true}
@@ -671,7 +581,6 @@ class SFPSessionScreen extends Component {
                     }
                   </View>
                 </View>
-                {/* ) : null} */}
               </ScrollView>
             </View>
 
@@ -705,7 +614,6 @@ class SFPSessionScreen extends Component {
                     <Text style={[styles.ManualText]}> {"Save"}</Text>
                   </TouchableHighlight>
                 )}
-                {/* {this.state.isScanEnabled ? ( */}
                 <Text
                   style={{
                     flex: 0.5,
@@ -717,7 +625,6 @@ class SFPSessionScreen extends Component {
                   {"Scan Count : "}
                   {this.state.scanCount}
                 </Text>
-                {/* ) : null} */}
               </View>
 
               <Text

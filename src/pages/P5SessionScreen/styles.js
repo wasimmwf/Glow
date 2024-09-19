@@ -576,6 +576,37 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontWeight: 'bold',
   },
+  dropdown1BtnStyle: {
+    width: 360,
+    height: 40,
+    //borderBottomWidth: 1,
+    //backgroundColor: Colors.cyanMain,
+    backgroundColor: "transparent",
+    // borderColor: Colors.cyan,
+    borderColor: Colors.gray,
+    borderWidth:1,
+    marginRight: 0,
+    borderRadius: 6
+  },
+  dropdown1BtnTxtStyle: {
+    color: '#444',
+    textAlign: 'left',
+    fontSize: 17,
+    marginLeft: 2,
+    fontWeight:'400'
+  },
+  dropdown1DropdownStyle: {
+    backgroundColor: '#EFEFEF'
+  },
+  dropdown1RowStyle: {
+    backgroundColor: '#EFEFEF',
+    borderBottomColor: '#C5C5C5'
+  },
+  dropdown1RowTxtStyle: {
+    color: '#444',
+    textAlign: 'left',
+    fontSize: 16
+  }
 });
 
 // Make the styles available for AccountScreen

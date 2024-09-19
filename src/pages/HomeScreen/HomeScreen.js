@@ -9,7 +9,7 @@ import { Colors, Fonts } from '../../themes';
 import PackageJson from '../../../package.json';
 import * as RNFS from "react-native-fs";
 import Dropdown from 'react-native-select-dropdown';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome';
 const GlowFolder = "/storage/emulated/0/Android/media/GLOW/";
 
 // Create a component
@@ -90,7 +90,7 @@ class HomeScreen extends Component {
                 rowStyle={styles.dropdown1RowStyle}
                 rowTextStyle={styles.dropdown1RowTxtStyle}
                 renderDropdownIcon={isOpened => {
-                  return <FontAwesome name={isOpened ? 'caret-up' : 'caret-down'} color={'#444'} size={20} />;
+                  return <Icon name={isOpened ? 'caret-up' : 'caret-down'} color={'#444'} size={20} />;
                 }}
                 buttonTextAfterSelection={(selectedItem, index) => {
                   // text represented after item is selected

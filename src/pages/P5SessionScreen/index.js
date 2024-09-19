@@ -1,64 +1,25 @@
 // Import libraries to create a component
-import { useEffect } from "react";
 import React, { Component } from "react";
-import {
-  Text,
-  View,
-  Image,
-  ImageBackground,
-  TouchableOpacity,
-  Alert,
-  TouchableHighlight,
-  KeyboardAvoidingView,
-  TextInput,
-  FlatList,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Platform,
-  AlertIOS,
-  BackHandler,
-  ScrollView,
-  //LogBox,
-  PermissionsAndroid,
-  Dimensions,
-} from "react-native";
+import { Text,View,ImageBackground,Alert,TouchableHighlight,KeyboardAvoidingView,TextInput,BackHandler,ScrollView,Dimensions,} from "react-native";
 
-// PermissionsAndroid.request(
-//   PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-// );
 
-import { Dropdown } from "react-native-material-dropdown";
-//import { Dropdown } from "react-native-material-dropdown-v2"
+import Dropdown from 'react-native-select-dropdown';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import * as RNFS from "react-native-fs";
-//import FileUpload from 'react-native-file-upload'
-//var FileUpload = require('NativeModules').FileUpload;
 import { NativeModules } from "react-native";
-const { FileUpload } = NativeModules;
 import Moment from "moment";
 import { EventRegister } from "react-native-event-listeners";
 import ZebraScanner from "@nextup/react-native-zebra-scanner";
-import { DeviceEventEmitter } from "react-native";
-
-//import SSHClient from 'react-native-ssh-sftp';
-
-// let client = new SSHClient('https://qatransfer.pconnect.biz/', 22, 'isms_fr_dev', '2f36sc', (error) => {
-//   if (error)
-//     console.warn(error);
-// });
 
 // Themes and Styles
 import styles from "./styles";
 import { Images, Colors } from "../../themes";
-import PackageJson from "../../../package";
 
 const { width, height } = Dimensions.get("window");
 // console.log('Dimension ', width, height);
 
 const txtPathFolder = RNFS.DocumentDirectoryPath + "/P5ScannedTxt/";
-//const txtExternalFolder = RNFS.ExternalStorageDirectoryPath + "/";
-//const txtExternalFolder = RNFS.ExternalStorageDirectoryPath + "/GLOW/";
-//const txtExternalFolder = "/storage/emulated/0/Android/media/{$packagename}" + "/GLOW/";
 const txtExternalFolder = "/storage/emulated/0/Android/media/GLOW/";
 
 // Create a component
@@ -80,7 +41,6 @@ class P5SessionScreen extends Component {
       isManualAllowed: false,
       isManualButtonEnabled: false,
       selectedMovType: "Select Movement Type",
-      //isResetEnable: true,
       autFocus: false,
       selection: [],
       scanDataArray: [],
@@ -96,12 +56,6 @@ class P5SessionScreen extends Component {
   handleDesFocus = () => this.setState({descFoucus: true,userNameFocus:false})
   //Added to handle device back button
   handleBackButton = () => {
-
-    // const pushAction = StackActions.push({
-    //   routeName: 'DefaultSelections',
-    // });
-
-    // this.props.navigation.dispatch(pushAction);
     return true
   }
 
@@ -115,7 +69,6 @@ class P5SessionScreen extends Component {
         !this.state.isManualAllowed
       ) {
         //console.log("Sacnned QR Code ->>  ",scannedCode, scannedCode.length)
-        //scannedCode = scannedCode.replace("\r\n", "");
         scannedCode = scannedCode.replace("\u001d", "");
         //console.log("Sacnned QR Code after replace ->>  ",scannedCode, scannedCode.length)
         //console.log("Sacnned QR Code after replace ->>  ",scannedCode.substring(0,16), scannedCode.substring(16,36),scannedCode.substring(36,scannedCode.length))
@@ -123,14 +76,12 @@ class P5SessionScreen extends Component {
         //console.log("Sacnned QR Code final ->>  ",scannedCode, scannedCode.length)
         if (scannedCode.includes("240M") == true && scannedCode.length >= 50 && scannedCode.length < 60) {
           //Parse with separator 
-          //scannedCode = scannedCode.substring(0,16) + '-' + scannedCode.substring(16,36) + '-' + scannedCode.substring(36,39)+ '-' + scannedCode.substring(39,scannedCode.length)
           scannedCode = scannedCode.substring(0,16) + '-' + scannedCode.substring(16,26) + '-' + scannedCode.substring(26,36) + '-'+ scannedCode.substring(36,39)+ '-' + scannedCode.substring(39,scannedCode.length)
           //Read File txt file
           var fileName = this.state.sessionId + ".txt";
           RNFS.readFile(txtPathFolder + fileName, "utf8")
             .then((content) => {
               if (content.includes(scannedCode) == true) {
-                //this.showAlert("Already Scaned " + scannedCode);
                 this.setState({
                   barcodeScannedData: "",
                   isSuccess: false,
@@ -146,7 +97,6 @@ class P5SessionScreen extends Component {
                 )
                   .then((success) => {
                     //File is appended
-                    //this.showAlert("Scanned Successfully.");
                     if (this.state.scanData == "") {
                       this.setState({
                         scanCount: this.state.scanCount + 1,
@@ -183,7 +133,7 @@ class P5SessionScreen extends Component {
       }
       //console.log("scannedCode-1->", this.state.scannedData);
     };
-    ZebraScanner.addScanListener(scanListener);
+    //ZebraScanner.addScanListener(scanListener);
 
     RNFS.exists(txtPathFolder).then((folderExist) => {
       if (folderExist) {
@@ -198,17 +148,6 @@ class P5SessionScreen extends Component {
           });
       }
     });
-    // this.BackListner = EventRegister.addEventListener("BackListner", (data) => {
-    //   Alert.alert(
-    //     "Alert",
-    //     "Are you sure you want to Close?",
-    //     [
-    //       { text: "NO", onPress: () => null, style: "Cancel" },
-    //       { text: "YES", onPress: () => this.onClose_Yes() },
-    //     ],
-    //     { cancelable: false }
-    //   );
-    // });
     this.BackListner = EventRegister.addEventListener("BackListner", (data) => {
       Alert.alert(
         "Alert",
@@ -247,8 +186,6 @@ class P5SessionScreen extends Component {
     if (this.state.scanCount > 0) {
       RNFS.copyFile(txtPathFolder + fileName, txtExternalFolder + fileName)
         .then((success) => {
-          //this.showAlert(fileName + ' File saved successfully');
-          //this.showAlert("File saved successfully.");
           RNFS.unlink(txtPathFolder + fileName)
             .then((success) => {
               this.props.navigation.push("HomeScreen");
@@ -279,10 +216,6 @@ class P5SessionScreen extends Component {
     EventRegister.removeEventListener(this.BackListner);
   }
 
-  // initiateSessionScreenInformation() {
-  //   var arrSystemValues = [];
-  // }
-
   // Method to be triggered on click of Main Button
   btnStartSave = async () => {
     if (this.state.isStartSession) {
@@ -300,7 +233,6 @@ class P5SessionScreen extends Component {
         autFocus: true,
         userNameFocus:false,
         descFoucus:false
-        //selectedMovType:this.state.arrMovementType[0].value
       });
       //Write file
       await RNFS.writeFile(
@@ -336,14 +268,9 @@ class P5SessionScreen extends Component {
     if (this.state.scanCount > 0) {
       RNFS.copyFile(txtPathFolder + fileName, txtExternalFolder + fileName)
         .then((success) => {
-          //this.showAlert(fileName + ' File saved successfully');
-          //this.showAlert("File saved successfully.");
           RNFS.unlink(txtPathFolder + fileName)
             .then((success) => {
               this.props.navigation.push("HomeScreen");
-              // setTimeout(() => { //Hang Issue
-              //   BackHandler.exitApp();
-              // }, 600000);
             })
             .catch((err) => {
               //console.log(err.message);
@@ -355,16 +282,10 @@ class P5SessionScreen extends Component {
     } else {
       if (this.state.sessionId == "") {
         this.props.navigation.push("HomeScreen");
-        // setTimeout(() => {
-        //   BackHandler.exitApp();
-        // }, 10000);
       } else {
         RNFS.unlink(txtPathFolder + fileName)
           .then((success) => {
             this.props.navigation.push("HomeScreen");
-            // setTimeout(() => {//Hang Issue
-            //   BackHandler.exitApp();
-            // }, 600000);
           })
           .catch((err) => {
             //console.log(err.message);
@@ -381,20 +302,14 @@ class P5SessionScreen extends Component {
   };
   onChangeScannedTextPress(value) {
     this.setState({ scanData: value.replace(/\s/g,'') });
-    //Handling space
-    // if (value.indexOf(" ") != 0) {
-    //   this.setState({ scanData: value});
-    // }
   }
   onChangeUserText(value) {
-    //this.setState({ userName: value.replace(/\s/g,'') });
     //Handling space
     if (value.indexOf(" ") != 0) {
       this.setState({ userName: value});
     }
   }
   onChangeDescText(value) {
-    //this.setState({ description: value.replace(/\s/g,'') });
     //Handling space
     if (value.indexOf(" ") != 0) {
       this.setState({ description: value});
@@ -405,9 +320,7 @@ class P5SessionScreen extends Component {
     if (msg == undefined) {
       msg = "Unknown error";
     }
-    if (Platform.OS === "android") {
-    }
-    (Platform.OS === "android" ? Alert : AlertIOS).alert("Alert", msg, [
+    Alert.alert("Alert", msg, [
       {
         text: "Ok",
         onPress: () => {},
@@ -448,7 +361,6 @@ class P5SessionScreen extends Component {
                 )
                   .then((success) => {
                     //File is appended
-                    //this.showAlert("Scanned Successfully.");
                     this.setState({
                       scanCount: this.state.scanCount + 1,
                       scanData: "",
@@ -552,7 +464,6 @@ class P5SessionScreen extends Component {
                       editable={false}
                       value={this.state.sessionId}
                     ></TextInput>
-                    {/* {this.state.userName.length > 0 && */}
                     {this.state.userName.length > 0 && this.state.selectedMovType != "Select Movement Type" &&
                     this.state.description.length > 0 ? (
                       <TouchableHighlight
@@ -570,29 +481,43 @@ class P5SessionScreen extends Component {
 
                 <Text style={styles.titleCaption}>{"Movement Type "}</Text>
                 <View style={styles.valueContainer}>
-                  <Dropdown
-                    style={styles.dropdown}
-                    //label={this.state.selectedMovType}
+                <Dropdown
                     data={this.state.arrMovementType}
-                    disabled={!this.state.isStartSession}
-                    //valueExtractor={({ value }) => value}
-                    //onChangeText={(value) => { this.onChangeTextPress('value', value) }}
-                    value={this.state.selectedMovType}
-                    onChangeText={(value) => this.onChangeTextPress(value)}
+                    //defaultButtonText={this.state.selectedMovType}
+                    onSelect={(selectedItem, index) => {
+                      this.onChangeTextPress(selectedItem.value)
+                    }}
+                    disabled={this.state.arrMovementType.length > 0 ? false : true}
+                    buttonStyle={styles.dropdown1BtnStyle}
+                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                    dropdownIconPosition={'right'}
+                    dropdownStyle={styles.dropdown1DropdownStyle}
+                    rowStyle={styles.dropdown1RowStyle}
+                    rowTextStyle={styles.dropdown1RowTxtStyle}
+                    renderDropdownIcon={isOpened => {
+                      return <Icon name={isOpened ? 'caret-up' : 'caret-down'} color={'#444'} size={20} />;
+                    }}
+                    buttonTextAfterSelection={(selectedItem, index) => {
+                      // text represented after item is selected
+                      // if data array is an array of objects then return selectedItem.property to render after item is selected
+                      return selectedItem.value
+                    }}
+                    rowTextForSelection={(item, index) => {
+                      // text represented for each item in dropdown
+                      // if data array is an array of objects then return item.property to represent item in dropdown
+                      return item.value
+                    }}
                   />
                 </View>
 
                 <Text style={styles.titleCaption}>{"User Name "}</Text>
                 <View style={styles.valueContainer}>
                   <TextInput
-                    //style={styles.textInput}
                     onFocus={this.handleUserFocus}
-                    // style={this.state.isUserNameEnabled ? styles.textInput:styles.textInputGreyUserDesc}
                     style={this.state.userNameFocus ? styles.textInputFocus :styles.textInput}
                     editable={this.state.isUserNameEnabled}
                     value={this.state.userName}
                     placeholder="Enter User Name"
-                    //onChangeText={(userName) => this.setState({ userName })}
                     onChangeText={(value) => this.onChangeUserText(value)}
                     onSubmitEditing={() => { this.secondTextInput.focus(); }}
                     blurOnSubmit={false}
@@ -604,17 +529,14 @@ class P5SessionScreen extends Component {
                   <TextInput
                     //style={styles.textInput}
                     onFocus={this.handleDesFocus}
-                    // style={this.state.isDescEnabled ? styles.textInput:styles.textInputGreyUserDesc}
                     style={this.state.descFoucus ? styles.textInputFocus :styles.textInput}
                     editable={this.state.isDescEnabled}
                     value={this.state.description}
                     placeholder="Enter Description"
-                    //onChangeText={(description) =>this.setState({ description })}
                     onChangeText={(value) => this.onChangeDescText(value)}
                     ref={(input) => { this.secondTextInput = input; }}
                   ></TextInput>
                 </View>
-                {/* {this.state.isScanEnabled ? ( */}
                 <View>
                   <Text style={styles.titleCaption}>{"Barcode "}</Text>
                   <View style={styles.valueContainer}>
@@ -633,7 +555,6 @@ class P5SessionScreen extends Component {
                       }
                     ></TextInput>
                       :
-                        // <View pointerEvents="none">
                         <View >
                           <TextInput
                             style={
@@ -650,11 +571,9 @@ class P5SessionScreen extends Component {
                           ></TextInput>
                         </View>
 
-
                     }
                   </View>
                 </View>
-                {/* ) : null} */}
               </ScrollView>
             </View>
 
@@ -688,7 +607,6 @@ class P5SessionScreen extends Component {
                     <Text style={[styles.ManualText]}> {"Save"}</Text>
                   </TouchableHighlight>
                 )}
-                {/* {this.state.isScanEnabled ? ( */}
                 <Text
                   style={{
                     flex: 0.5,
@@ -700,7 +618,6 @@ class P5SessionScreen extends Component {
                   {"Scan Count : "}
                   {this.state.scanCount}
                 </Text>
-                {/* ) : null} */}
               </View>
 
               <Text

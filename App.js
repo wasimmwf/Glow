@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 // import { View, Text } from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../glow/src/pages/HomeScreen/HomeScreen';
 import SessionScreen from './src/pages/SessionScreen';
 import P5SessionScreen from './src/pages/P5SessionScreen';
@@ -19,19 +19,41 @@ function App() {
         <Stack.Screen
           name="Glow"
           component={HomeScreen}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
-        <Stack.Screen 
-        name="SessionScreen" 
-        component={SessionScreen} 
-        options={{ 
-          title: 'Session Screen', 
-          headerTintColor: '#fff',
-          headerStyle: {
-              backgroundColor: Colors.pmiBlue} }}
+        <Stack.Screen
+          name="SessionScreen"
+          component={SessionScreen}
+          options={{
+            title: 'Session Screen',
+            headerTintColor: '#fff',
+            headerStyle: {
+              backgroundColor: Colors.pmiBlue
+            }
+          }}
         />
-        <Stack.Screen name="P5SessionScreen" component={P5SessionScreen} />
-        <Stack.Screen name="SFPSessionScreen" component={SFPSessionScreen} />
+        <Stack.Screen
+          name="P5SessionScreen"
+          component={P5SessionScreen}
+          options={{
+            title: 'P5 Session Screen',
+            headerTintColor: '#fff',
+            headerStyle: {
+              backgroundColor: Colors.pmiBlue
+            }
+          }}
+        />
+        <Stack.Screen
+          name="SFPSessionScreen"
+          component={SFPSessionScreen}
+          options={{
+            title: 'SFP Session Screen',
+            headerTintColor: '#fff',
+            headerStyle: {
+              backgroundColor: Colors.pmiBlue
+            }
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
