@@ -213,9 +213,11 @@ const styles = StyleSheet.create({
   },
   dropdown1DropdownStyle: {
     backgroundColor: '#EFEFEF'
+    //backgroundColor: 'transparent'
   },
   dropdown1RowStyle: {
     backgroundColor: '#EFEFEF',
+    // backgroundColor: Colors.lightCyan,
     borderBottomColor: '#C5C5C5'
   },
   dropdown1RowTxtStyle: {
