@@ -61,81 +61,85 @@ class SessionScreen extends Component {
   }
 
   componentDidMount = () => {
-    const scanListener = (scannedCode) => {
-      //console.log("scannedCode-->", scannedCode);
-      this.setState({ barcodeScannedData: scannedCode });
-      if (
-        scannedCode != "" &&
-        this.state.isScanEnabled &&
-        !this.state.isManualAllowed
-      ) {
-        scannedCode = scannedCode.replace("\r\n", "");
-        scannedCode = scannedCode.replace("_", "");
-        scannedCode = scannedCode.replace("+", "");
-        scannedCode = scannedCode.replace("-", "");
-        scannedCode = scannedCode.toUpperCase();
-        //var content = await RNFS.readFile(txtPathFolder + fileName, 'utf8');
-        //console.log("Wasim ->>  ",scannedCode.indexOf("3K"),scannedCode.indexOf("3S"))
-        if (scannedCode.indexOf("3K") == 0 || scannedCode.indexOf("3S") == 0) {
-          //Read File txt file
-          var fileName = this.state.sessionId + ".txt";
-          RNFS.readFile(txtPathFolder + fileName, "utf8")
-            .then((content) => {
-              if (content.includes(scannedCode) == true) {
-                //this.showAlert("Already Scaned " + scannedCode);
-                this.setState({
-                  barcodeScannedData: "",
-                  isSuccess: false,
-                  message: "Already Scaned " + scannedCode,
-                });
-              } else {
-                var TimeNow = Moment(new Date()).format("hh:mm A");
-                //write the file
-                RNFS.appendFile(
-                  txtPathFolder + fileName,
-                  "\n" + scannedCode + ";" + TimeNow + ";A",
-                  "utf8"
-                )
-                  .then((success) => {
-                    //File is appended
-                    //this.showAlert("Scanned Successfully.");
-                    if (this.state.scanData == "") {
-                      this.setState({
-                        scanCount: this.state.scanCount + 1,
-                        barcodeScannedData: "",
-                        scanData: scannedCode,
-                        isSuccess: true,
-                        message: "Scanned Successfully.",
-                      });
-                    } else {
-                      this.setState({
-                        scanCount: this.state.scanCount + 1,
-                        barcodeScannedData: "",
-                        scanData: this.state.scanData + "\n" + scannedCode,
-                        isSuccess: true,
-                        message: "Scanned Successfully.",
-                      });
-                    }
-                  })
-                  .catch((err) => {
-                    console.log(err.message);
+    try {
+      ZebraScanner.on('barcodeReadSuccess', event => {
+        //console.log('Received data', event);
+        //this.setState({ scannedData: event.data, referenceNo: event.data });
+        this.setState({ barcodeScannedData: event.data });
+        var scannedCode = event.data;
+        if (
+          scannedCode != "" &&
+          this.state.isScanEnabled &&
+          !this.state.isManualAllowed
+        ) {
+          scannedCode = scannedCode.replace("\r\n", "");
+          scannedCode = scannedCode.replace("_", "");
+          scannedCode = scannedCode.replace("+", "");
+          scannedCode = scannedCode.replace("-", "");
+          scannedCode = scannedCode.toUpperCase();
+          //console.log("Wasim ->>  ",scannedCode.indexOf("3K"),scannedCode.indexOf("3S"))
+          if (scannedCode.indexOf("3K") == 0 || scannedCode.indexOf("3S") == 0) {
+            //Read File txt file
+            var fileName = this.state.sessionId + ".txt";
+            RNFS.readFile(txtPathFolder + fileName, "utf8")
+              .then((content) => {
+                if (content.includes(scannedCode) == true) {
+                  //this.showAlert("Already Scaned " + scannedCode);
+                  this.setState({
+                    barcodeScannedData: "",
+                    isSuccess: false,
+                    message: "Already Scaned " + scannedCode,
                   });
-              }
-            })
-            .catch((err) => {
-              console.log(err.message);
+                } else {
+                  var TimeNow = Moment(new Date()).format("hh:mm A");
+                  //write the file
+                  RNFS.appendFile(
+                    txtPathFolder + fileName,
+                    "\n" + scannedCode + ";" + TimeNow + ";A",
+                    "utf8"
+                  )
+                    .then((success) => {
+                      //File is appended
+                      //this.showAlert("Scanned Successfully.");
+                      if (this.state.scanData == "") {
+                        this.setState({
+                          scanCount: this.state.scanCount + 1,
+                          barcodeScannedData: "",
+                          scanData: scannedCode,
+                          isSuccess: true,
+                          message: "Scanned Successfully.",
+                        });
+                      } else {
+                        this.setState({
+                          scanCount: this.state.scanCount + 1,
+                          barcodeScannedData: "",
+                          scanData: this.state.scanData + "\n" + scannedCode,
+                          isSuccess: true,
+                          message: "Scanned Successfully.",
+                        });
+                      }
+                    })
+                    .catch((err) => {
+                      console.log(err.message);
+                    });
+                }
+              })
+              .catch((err) => {
+                console.log(err.message);
+              });
+          } else {
+            this.setState({
+              barcodeScannedData: "",
+              isSuccess: false,
+              message: "Invalid barcode. ",
             });
-        } else {
-          this.setState({
-            barcodeScannedData: "",
-            isSuccess: false,
-            message: "Invalid barcode. ",
-          });
+          }
         }
-      }
-      //console.log("scannedCode-1->", this.state.scannedData);
-    };
-    //ZebraScanner.addScanListener(scanListener);
+        //console.log("scannedCode-1->", this.state.scannedData);
+      });
+    } catch (error) {
+      console.log('Device is not supported');
+    }
 
     RNFS.exists(txtPathFolder).then((folderExist) => {
       if (folderExist) {
@@ -325,9 +329,7 @@ class SessionScreen extends Component {
     if (msg == undefined) {
       msg = "Unknown error";
     }
-    if (Platform.OS === "android") {
-    }
-    (Platform.OS === "android" ? Alert : AlertIOS).alert("Alert", msg, [
+    Alert.alert("Alert", msg, [
       {
         text: "Ok",
         onPress: () => { },

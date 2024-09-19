@@ -1,6 +1,6 @@
 // Import libraries to create a component
 import React, { Component } from "react";
-import {Text,View,ImageBackground,Alert,TouchableHighlight,KeyboardAvoidingView,TextInput,BackHandler,ScrollView,Dimensions,} from "react-native";
+import { Text, View, ImageBackground, Alert, TouchableHighlight, KeyboardAvoidingView, TextInput, BackHandler, ScrollView, Dimensions, } from "react-native";
 
 import Dropdown from 'react-native-select-dropdown';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -48,12 +48,12 @@ class SFPSessionScreen extends Component {
       barcodeScannedData: "",
       message: "",
       isSuccess: false,
-      userNameFocus:false,
-      descFoucus:false
+      userNameFocus: false,
+      descFoucus: false
     };
   }
-  handleUserFocus = () => this.setState({userNameFocus: true,descFoucus:false})
-  handleDesFocus = () => this.setState({descFoucus: true,userNameFocus:false})
+  handleUserFocus = () => this.setState({ userNameFocus: true, descFoucus: false })
+  handleDesFocus = () => this.setState({ descFoucus: true, userNameFocus: false })
 
   //Added to handle device back button
   handleBackButton = () => {
@@ -61,79 +61,84 @@ class SFPSessionScreen extends Component {
   }
 
   componentDidMount = () => {
-    const scanListener = (scannedCode) => {
-      //console.log("scannedCode-->", scannedCode);
-      this.setState({ barcodeScannedData: scannedCode });
-      if (
-        scannedCode != "" &&
-        this.state.isScanEnabled &&
-        !this.state.isManualAllowed
-      ) {
-        scannedCode = scannedCode.replace("\r\n", "");
-        scannedCode = scannedCode.replace("_", "");
-        scannedCode = scannedCode.replace("+", "");
-        scannedCode = scannedCode.replace("-", "");
-        scannedCode = scannedCode.toUpperCase();
-        // if (scannedCode.indexOf("3T") == 0  && scannedCode.includes("ZYN") == true) {
-        if (scannedCode.indexOf("3T") == 0 ) {
-          //Read File txt file
-          var fileName = this.state.sessionId + ".txt";
-          RNFS.readFile(txtPathFolder + fileName, "utf8")
-            .then((content) => {
-              if (content.includes(scannedCode) == true) {
-                //this.showAlert("Already Scaned " + scannedCode);
-                this.setState({
-                  barcodeScannedData: "",
-                  isSuccess: false,
-                  message: "Already Scaned " + scannedCode,
-                });
-              } else {
-                var TimeNow = Moment(new Date()).format("hh:mm A");
-                //write the file
-                RNFS.appendFile(
-                  txtPathFolder + fileName,
-                  "\n" + scannedCode + ";" + TimeNow + ";A",
-                  "utf8"
-                )
-                  .then((success) => {
-                    //File is appended
-                    if (this.state.scanData == "") {
-                      this.setState({
-                        scanCount: this.state.scanCount + 1,
-                        barcodeScannedData: "",
-                        scanData: scannedCode,
-                        isSuccess: true,
-                        message: "Scanned Successfully.",
-                      });
-                    } else {
-                      this.setState({
-                        scanCount: this.state.scanCount + 1,
-                        barcodeScannedData: "",
-                        scanData: this.state.scanData + "\n" + scannedCode,
-                        isSuccess: true,
-                        message: "Scanned Successfully.",
-                      });
-                    }
-                  })
-                  .catch((err) => {
-                    console.log(err.message);
+    try {
+      ZebraScanner.on('barcodeReadSuccess', event => {
+        //console.log('Received data', event);
+        //this.setState({ scannedData: event.data, referenceNo: event.data });
+        this.setState({ barcodeScannedData: event.data });
+        var scannedCode = event.data;
+        if (
+          scannedCode != "" &&
+          this.state.isScanEnabled &&
+          !this.state.isManualAllowed
+        ) {
+          scannedCode = scannedCode.replace("\r\n", "");
+          scannedCode = scannedCode.replace("_", "");
+          scannedCode = scannedCode.replace("+", "");
+          scannedCode = scannedCode.replace("-", "");
+          scannedCode = scannedCode.toUpperCase();
+          // if (scannedCode.indexOf("3T") == 0  && scannedCode.includes("ZYN") == true) {
+          if (scannedCode.indexOf("3T") == 0) {
+            //Read File txt file
+            var fileName = this.state.sessionId + ".txt";
+            RNFS.readFile(txtPathFolder + fileName, "utf8")
+              .then((content) => {
+                if (content.includes(scannedCode) == true) {
+                  //this.showAlert("Already Scaned " + scannedCode);
+                  this.setState({
+                    barcodeScannedData: "",
+                    isSuccess: false,
+                    message: "Already Scaned " + scannedCode,
                   });
-              }
-            })
-            .catch((err) => {
-              console.log(err.message);
+                } else {
+                  var TimeNow = Moment(new Date()).format("hh:mm A");
+                  //write the file
+                  RNFS.appendFile(
+                    txtPathFolder + fileName,
+                    "\n" + scannedCode + ";" + TimeNow + ";A",
+                    "utf8"
+                  )
+                    .then((success) => {
+                      //File is appended
+                      if (this.state.scanData == "") {
+                        this.setState({
+                          scanCount: this.state.scanCount + 1,
+                          barcodeScannedData: "",
+                          scanData: scannedCode,
+                          isSuccess: true,
+                          message: "Scanned Successfully.",
+                        });
+                      } else {
+                        this.setState({
+                          scanCount: this.state.scanCount + 1,
+                          barcodeScannedData: "",
+                          scanData: this.state.scanData + "\n" + scannedCode,
+                          isSuccess: true,
+                          message: "Scanned Successfully.",
+                        });
+                      }
+                    })
+                    .catch((err) => {
+                      console.log(err.message);
+                    });
+                }
+              })
+              .catch((err) => {
+                console.log(err.message);
+              });
+          } else {
+            this.setState({
+              barcodeScannedData: "",
+              isSuccess: false,
+              message: "Invalid barcode. ",
             });
-        } else {
-          this.setState({
-            barcodeScannedData: "",
-            isSuccess: false,
-            message: "Invalid barcode. ",
-          });
+          }
         }
-      }
-      //console.log("scannedCode-1->", this.state.scannedData);
-    };
-    //ZebraScanner.addScanListener(scanListener);
+        //console.log("scannedCode-1->", this.state.scannedData);
+      });
+    } catch (error) {
+      console.log('Device is not supported');
+    }
 
     RNFS.exists(txtPathFolder).then((folderExist) => {
       if (folderExist) {
@@ -153,7 +158,7 @@ class SFPSessionScreen extends Component {
         "Alert",
         "Do you want to save the file?",
         [
-          { text: "CANCEL", onPress: () => {}, },
+          { text: "CANCEL", onPress: () => { }, },
           { text: "NO", onPress: () => this.onClose_Yes() },
           { text: "YES", onPress: () => this.onBackSave_Yes() },
         ],
@@ -233,21 +238,21 @@ class SFPSessionScreen extends Component {
         isDescEnabled: false,
         isManualButtonEnabled: true,
         autFocus: true,
-        userNameFocus:false,
-        descFoucus:false
+        userNameFocus: false,
+        descFoucus: false
       });
       //Write file
       await RNFS.writeFile(
         txtPathFolder + fileName,
         timeNow +
-          ";" +
-          this.state.selectedMovType +
-          ";" +
-          this.state.userName +
-          ";" +
-          this.state.description +
-          ";" +
-          DateNow,
+        ";" +
+        this.state.selectedMovType +
+        ";" +
+        this.state.userName +
+        ";" +
+        this.state.description +
+        ";" +
+        DateNow,
         "utf8"
       );
     } else {
@@ -256,7 +261,7 @@ class SFPSessionScreen extends Component {
         "glow",
         "Are you sure you want to Save?",
         [
-          { text: "NO", onPress: () => {}, style: "Cancel" },
+          { text: "NO", onPress: () => { }, style: "Cancel" },
           { text: "YES", onPress: () => this.onSave_Yes() },
         ],
         { cancelable: false }
@@ -304,18 +309,18 @@ class SFPSessionScreen extends Component {
     this.setState({ selection: event.nativeEvent.selection });
   };
   onChangeScannedTextPress(value) {
-    this.setState({ scanData: value.replace(/\s/g,'') });
+    this.setState({ scanData: value.replace(/\s/g, '') });
   }
   onChangeUserText(value) {
     //Handling space
     if (value.indexOf(" ") != 0) {
-      this.setState({ userName: value});
+      this.setState({ userName: value });
     }
   }
   onChangeDescText(value) {
     //Handling space
     if (value.indexOf(" ") != 0) {
-      this.setState({ description: value});
+      this.setState({ description: value });
     }
   }
 
@@ -326,7 +331,7 @@ class SFPSessionScreen extends Component {
     Alert.alert("Alert", msg, [
       {
         text: "Ok",
-        onPress: () => {},
+        onPress: () => { },
       },
     ]);
   }
@@ -335,7 +340,7 @@ class SFPSessionScreen extends Component {
       isManualAllowed: true,
       isManualButtonEnabled: false,
       //barcodeScannedData: this.state.scanData,
-      scanData:""
+      scanData: ""
     });
   };
   btnManualSave_Click = async () => {
@@ -348,43 +353,43 @@ class SFPSessionScreen extends Component {
     // if (mScanned.indexOf("3T") == 0 && scannedCode.includes("ZYN") == true) {
     if (mScanned.indexOf("3T") == 0) {
       var fileName = this.state.sessionId + ".txt";
-       //Read File
-        RNFS.readFile(txtPathFolder + fileName, "utf8")
-            .then((content) => {
-              if (content.includes(mScanned) == true) {
-                //this.showAlert("Already Scaned " + mScanned);
-                this.setState({
-                  isSuccess: false,
-                  message: "Already Scaned " + mScanned,
-                });
-              } else {
-                var TimeNow = Moment(new Date()).format("hh:mm A");
-                //write the file
-                RNFS.appendFile(
-                  txtPathFolder + fileName,
-                  "\n" + mScanned + ";" + TimeNow + ";M",
-                  "utf8"
-                )
-                  .then((success) => {
-                    //File is appended
-                    //this.showAlert("Scanned Successfully.");
-                    this.setState({
-                      scanCount: this.state.scanCount + 1,
-                      scanData: "",
-                      isManualButtonEnabled: true,
-                      isManualAllowed: false,
-                      isSuccess: true,
-                      message: "Scanned Manually.",
-                    });
-                  })
-                  .catch((err) => {
-                    console.log(err.message);
-                  });
-              }
-            })
-            .catch((err) => {
-              console.log(err.message);
+      //Read File
+      RNFS.readFile(txtPathFolder + fileName, "utf8")
+        .then((content) => {
+          if (content.includes(mScanned) == true) {
+            //this.showAlert("Already Scaned " + mScanned);
+            this.setState({
+              isSuccess: false,
+              message: "Already Scaned " + mScanned,
             });
+          } else {
+            var TimeNow = Moment(new Date()).format("hh:mm A");
+            //write the file
+            RNFS.appendFile(
+              txtPathFolder + fileName,
+              "\n" + mScanned + ";" + TimeNow + ";M",
+              "utf8"
+            )
+              .then((success) => {
+                //File is appended
+                //this.showAlert("Scanned Successfully.");
+                this.setState({
+                  scanCount: this.state.scanCount + 1,
+                  scanData: "",
+                  isManualButtonEnabled: true,
+                  isManualAllowed: false,
+                  isSuccess: true,
+                  message: "Scanned Manually.",
+                });
+              })
+              .catch((err) => {
+                console.log(err.message);
+              });
+          }
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
     } else {
       this.setState({
         isSuccess: false,
@@ -473,7 +478,7 @@ class SFPSessionScreen extends Component {
                     ></TextInput>
                     {/* {this.state.userName.length > 0 && */}
                     {this.state.userName.length > 0 && this.state.selectedMovType != "Select Movement Type" &&
-                    this.state.description.length > 0 ? (
+                      this.state.description.length > 0 ? (
                       <TouchableHighlight
                         style={styles.StartSession}
                         underlayColor="#fff"
@@ -489,7 +494,7 @@ class SFPSessionScreen extends Component {
 
                 <Text style={styles.titleCaption}>{"Movement Type "}</Text>
                 <View style={styles.valueContainer}>
-                <Dropdown
+                  <Dropdown
                     data={this.state.arrMovementType}
                     //defaultButtonText={this.state.selectedMovType}
                     onSelect={(selectedItem, index) => {
@@ -522,7 +527,7 @@ class SFPSessionScreen extends Component {
                 <View style={styles.valueContainer}>
                   <TextInput
                     onFocus={this.handleUserFocus}
-                    style={this.state.userNameFocus ? styles.textInputFocus :styles.textInput}
+                    style={this.state.userNameFocus ? styles.textInputFocus : styles.textInput}
                     editable={this.state.isUserNameEnabled}
                     value={this.state.userName}
                     placeholder="Enter User Name"
@@ -536,7 +541,7 @@ class SFPSessionScreen extends Component {
                 <View style={styles.valueContainer}>
                   <TextInput
                     onFocus={this.handleDesFocus}
-                    style={this.state.descFoucus ? styles.textInputFocus :styles.textInput}
+                    style={this.state.descFoucus ? styles.textInputFocus : styles.textInput}
                     editable={this.state.isDescEnabled}
                     value={this.state.description}
                     placeholder="Enter Description"
@@ -549,19 +554,19 @@ class SFPSessionScreen extends Component {
                   <View style={styles.valueContainer}>
                     {
                       this.state.isManualAllowed ?
-                      <TextInput
-                      style={
-                        !this.state.scanData == ""
-                          ? styles.textInputBarcodeColored
-                          : styles.textInputBarcode
-                      }
-                      editable={true}
-                      value={this.state.scanData}
-                      onChangeText={(value) =>
-                        this.onChangeScannedTextPress(value)
-                      }
-                    ></TextInput>
-                      :
+                        <TextInput
+                          style={
+                            !this.state.scanData == ""
+                              ? styles.textInputBarcodeColored
+                              : styles.textInputBarcode
+                          }
+                          editable={true}
+                          value={this.state.scanData}
+                          onChangeText={(value) =>
+                            this.onChangeScannedTextPress(value)
+                          }
+                        ></TextInput>
+                        :
                         <View >
                           <TextInput
                             style={

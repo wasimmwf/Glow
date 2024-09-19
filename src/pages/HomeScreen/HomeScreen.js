@@ -1,6 +1,6 @@
 // Import libraries to create a component
 import React, { Component } from 'react';
-import {StyleSheet,Text,View,ImageBackground,TouchableHighlight,NativeModules} from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, TouchableHighlight, NativeModules } from 'react-native';
 
 const { PermissionFile } = NativeModules;
 
@@ -77,32 +77,32 @@ class HomeScreen extends Component {
           </View>
           <View style={{ flexDirection: 'column', alignContent: 'flex-start', flex: 0.3, marginTop: 40 }}>
             <Dropdown
-                data={this.state.arrProductType}
-                defaultButtonText={"CC Product"}
-                onSelect={(selectedItem, index) => {
-                  this.setState({ selectedSessionType: selectedItem.value, selectedIndex: index })
-                }}
-                disabled={this.state.arrProductType.length > 0 ? false : true}
-                buttonStyle={styles.dropdown1BtnStyle}
-                buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                dropdownIconPosition={'right'}
-                dropdownStyle={styles.dropdown1DropdownStyle}
-                rowStyle={styles.dropdown1RowStyle}
-                rowTextStyle={styles.dropdown1RowTxtStyle}
-                renderDropdownIcon={isOpened => {
-                  return <Icon name={isOpened ? 'caret-up' : 'caret-down'} color={'#444'} size={20} />;
-                }}
-                buttonTextAfterSelection={(selectedItem, index) => {
-                  // text represented after item is selected
-                  // if data array is an array of objects then return selectedItem.property to render after item is selected
-                  return selectedItem.value
-                }}
-                rowTextForSelection={(item, index) => {
-                  // text represented for each item in dropdown
-                  // if data array is an array of objects then return item.property to represent item in dropdown
-                  return item.value
-                }}
-              />
+              data={this.state.arrProductType}
+              defaultButtonText={"CC Product"}
+              onSelect={(selectedItem, index) => {
+                this.setState({ selectedSessionType: selectedItem.value, selectedIndex: index })
+              }}
+              disabled={this.state.arrProductType.length > 0 ? false : true}
+              buttonStyle={styles.dropdown1BtnStyle}
+              buttonTextStyle={styles.dropdown1BtnTxtStyle}
+              dropdownIconPosition={'right'}
+              dropdownStyle={styles.dropdown1DropdownStyle}
+              rowStyle={styles.dropdown1RowStyle}
+              rowTextStyle={styles.dropdown1RowTxtStyle}
+              renderDropdownIcon={isOpened => {
+                return <Icon name={isOpened ? 'caret-up' : 'caret-down'} color={'#444'} size={20} />;
+              }}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                // text represented after item is selected
+                // if data array is an array of objects then return selectedItem.property to render after item is selected
+                return selectedItem.value
+              }}
+              rowTextForSelection={(item, index) => {
+                // text represented for each item in dropdown
+                // if data array is an array of objects then return item.property to represent item in dropdown
+                return item.value
+              }}
+            />
           </View>
           <TouchableHighlight
             style={styles.Create}
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 17,
     marginLeft: 5,
-    fontWeight:'500'
+    fontWeight: '500'
   },
   dropdown1DropdownStyle: {
     backgroundColor: '#EFEFEF'
