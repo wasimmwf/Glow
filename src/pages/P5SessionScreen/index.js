@@ -173,11 +173,11 @@ class P5SessionScreen extends Component {
     var fileName = this.state.sessionId + ".txt";
 
     if (this.state.sessionId == "") {
-      this.props.navigation.push("HomeScreen");
+      this.props.navigation.navigate("HomeScreen");
     } else {
       RNFS.unlink(txtPathFolder + fileName)
         .then((success) => {
-          this.props.navigation.push("HomeScreen");
+          this.props.navigation.navigate("HomeScreen");
         })
         .catch((err) => {
           //console.log(err.message);
@@ -193,7 +193,7 @@ class P5SessionScreen extends Component {
         .then((success) => {
           RNFS.unlink(txtPathFolder + fileName)
             .then((success) => {
-              this.props.navigation.push("HomeScreen");
+              this.props.navigation.navigate("HomeScreen");
             })
             .catch((err) => {
               //console.log(err.message);
@@ -204,11 +204,11 @@ class P5SessionScreen extends Component {
         });
     } else {
       if (this.state.sessionId == "") {
-        this.props.navigation.push("HomeScreen");
+        this.props.navigation.navigate("HomeScreen");
       } else {
         RNFS.unlink(txtPathFolder + fileName)
           .then((success) => {
-            this.props.navigation.push("HomeScreen");
+            this.props.navigation.navigate("HomeScreen");
           })
           .catch((err) => {
             //console.log(err.message);
@@ -275,7 +275,7 @@ class P5SessionScreen extends Component {
         .then((success) => {
           RNFS.unlink(txtPathFolder + fileName)
             .then((success) => {
-              this.props.navigation.push("HomeScreen");
+              this.props.navigation.navigate("HomeScreen");
             })
             .catch((err) => {
               //console.log(err.message);
@@ -286,11 +286,11 @@ class P5SessionScreen extends Component {
         });
     } else {
       if (this.state.sessionId == "") {
-        this.props.navigation.push("HomeScreen");
+        this.props.navigation.navigate("HomeScreen");
       } else {
         RNFS.unlink(txtPathFolder + fileName)
           .then((success) => {
-            this.props.navigation.push("HomeScreen");
+            this.props.navigation.navigate("HomeScreen");
           })
           .catch((err) => {
             //console.log(err.message);
