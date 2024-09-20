@@ -230,7 +230,7 @@ class SessionScreen extends Component {
       var timeNow = new Date().getTime().toString();
       var DateNow = Moment(new Date()).format("DD-MM-YY");
       var fileName = timeNow + ".txt";
-      //console.log("Wasim ->> ",timeNow,DateNow)
+      console.log("Wasim ->> ",fileName,timeNow,DateNow)
       this.setState({
         isStartSession: false,
         sessionId: timeNow,

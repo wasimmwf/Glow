@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 // import { View, Text } from 'react-native';
+import { PermissionsAndroid ,Platform} from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../glow/src/pages/HomeScreen/HomeScreen';
@@ -9,10 +10,41 @@ import SessionScreen from './src/pages/SessionScreen';
 import P5SessionScreen from './src/pages/P5SessionScreen';
 import SFPSessionScreen from './src/pages/SFPSessionScreen';
 import { Colors } from './src/themes';
+import * as RNFS from "react-native-fs";
 
 const Stack = createNativeStackNavigator();
+// const phoneStorageDir = RNFS.ExternalStorageDirectoryPath + '/Glow/';
+const GlowFolder = "/storage/emulated/0/Android/media/GLOW/";
+
+const createAppFolder = async () => {
+  isGlowFolderExist = await RNFS.exists(GlowFolder)
+  if (!isGlowFolderExist) {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Permissions for write access',
+          message: 'Give permission to your storage to write a file',
+          buttonPositive: 'ok',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        // await RNFS.mkdir(phoneStorageDir);
+        await RNFS.mkdir(GlowFolder);
+      } else {
+        console.log('permission denied');
+        return;
+      }
+    } catch (err) {
+      console.warn(err);
+      return;
+    }
+
+  }
+}
 
 function App() {
+  createAppFolder()
   return (
     <NavigationContainer initialRouteName="Glow">
       <Stack.Navigator>

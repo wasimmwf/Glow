@@ -26,26 +26,26 @@ class HomeScreen extends Component {
 
   componentDidMount = async () => {
 
-    await PermissionFile.checkAndGrantPermission(
-      err => {
-        console.log(err.message);
-      },
-      res => {
-        RNFS.exists(GlowFolder).then((folderExist) => {
-          if (folderExist) {
-            //console.log('folder exist ->> ', folderExist);
-          } else {
-            RNFS.mkdir(GlowFolder)
-              .then((isDirectoryCreated) => {
-                //console.log('DirectoryCreated');
-              })
-              .catch((err) => {
-                console.log(err.message);
-              });
-          }
-        });
-      },
-    )
+    // await PermissionFile.checkAndGrantPermission(
+    //   err => {
+    //     console.log(err.message);
+    //   },
+    //   res => {
+    //     RNFS.exists(GlowFolder).then((folderExist) => {
+    //       if (folderExist) {
+    //         //console.log('folder exist ->> ', folderExist);
+    //       } else {
+    //         RNFS.mkdir(GlowFolder)
+    //           .then((isDirectoryCreated) => {
+    //             //console.log('DirectoryCreated');
+    //           })
+    //           .catch((err) => {
+    //             console.log(err.message);
+    //           });
+    //       }
+    //     });
+    //   },
+    // )
   };
 
 
