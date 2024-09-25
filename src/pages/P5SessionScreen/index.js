@@ -77,7 +77,8 @@ class P5SessionScreen extends Component {
           //console.log("Sacnned QR Code after replace ->>  ",scannedCode.substring(0,16), scannedCode.substring(16,36),scannedCode.substring(36,scannedCode.length))
           // scannedCode = scannedCode.substring(0,16) + '-' + scannedCode.substring(16,36) + '-' + scannedCode.substring(36,scannedCode.length)
           //console.log("Sacnned QR Code final ->>  ",scannedCode, scannedCode.length)
-          if (scannedCode.includes("240M") == true && scannedCode.length >= 50 && scannedCode.length < 60) {
+          // if (scannedCode.includes("240M") == true && scannedCode.length >= 50 && scannedCode.length < 60) {
+          if ((scannedCode.includes("240D") == true || scannedCode.includes("240M") == true || scannedCode.includes("240N") == true) && scannedCode.length >= 50 && scannedCode.length < 60) {
             //Parse with separator 
             scannedCode = scannedCode.substring(0, 16) + '-' + scannedCode.substring(16, 26) + '-' + scannedCode.substring(26, 36) + '-' + scannedCode.substring(36, 39) + '-' + scannedCode.substring(39, scannedCode.length)
             //Read File txt file
@@ -345,7 +346,8 @@ class P5SessionScreen extends Component {
     // console.log("Sacnned QR Code ->>  ",scannedCode, scannedCode.length)
     // scannedCode = scannedCode.replace("\r\n", "");
     // scannedCode = scannedCode.replace("\n", "");
-    if (mScanned.includes("240M") == true && mScanned.length >= 50 && mScanned.length < 60) {
+    // if (mScanned.includes("240M") == true && mScanned.length >= 50 && mScanned.length < 60) {
+      if ((mScanned.includes("240D") == true || mScanned.includes("240M") == true || mScanned.includes("240N") == true) && mScanned.length >= 50 && mScanned.length < 60) {
       var fileName = this.state.sessionId + ".txt";
       //Read File
       RNFS.readFile(txtPathFolder + fileName, "utf8")
